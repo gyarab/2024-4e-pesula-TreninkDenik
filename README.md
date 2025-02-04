@@ -1,1 +1,1 @@
-# 2024-4e-pesula-TreninkDenikk
+# 2024-4e-pesula-TreninkDenik
