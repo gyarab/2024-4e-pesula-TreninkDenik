@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %} Moje tréninky {% endblock %}
+
+{% block content %}
+
+<h1>Moje tréninky</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Datum</th>
+            <th>Typ tréninku</th>
+            <th>Doba</th>
+            <th>Poznámky</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for trenink in treninky %}
+        <tr>
+            <td>{{ trenink.datum }}</td>
+            <td>{{ trenink.type }}</td>
+            <td>{{ trenink.doba }} minut</td>
+            <td>{{ trenink.pozn }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
