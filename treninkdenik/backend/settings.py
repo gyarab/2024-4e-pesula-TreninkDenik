@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     "api",
     ]
 
+LOGIN_REDIRECT_URL = '/udaje/'  # Po přihlášení půjde uživatel rovnou na zadání údajů
+LOGIN_URL = '/login/'  # Nepřihlášení uživatelé budou přesměrováni na login
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

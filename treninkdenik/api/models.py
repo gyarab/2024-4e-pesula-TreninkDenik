@@ -6,6 +6,7 @@ class Uzivatel(models.Model):
     vek = models.IntegerField()
     vyska = models.FloatField()
     vaha = models.FloatField()
+    id = models.AutoField(primary_key=True)
     active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -19,10 +20,10 @@ class Trenink(models.Model):
     ]
 
     user = models.ForeignKey(Uzivatel, on_delete=models.CASCADE)
-    datum = models.DateField() # Datum konání tréninku
+    datum = models.DateField()
     type = models.CharField(max_length=20, choices=TRENINK_TYPES) # Typ tréninku
     doba = models.PositiveIntegerField() # Uplynulá doba tréninku v minutách
-    pozn = models.TextField(blank=True) # Poznámky z tréninku
+    pozn = models.TextField(blank=True)
     active = models.BooleanField(default=True)
 
     def __str__(self):
