@@ -3,8 +3,9 @@ from django.shortcuts import redirect, render, get_object_or_404
 from .models import Uzivatel, Trenink
 from .serializers import UzivatelSerializer, TreninkSerializer
 from .forms import UzivatelForm, TreninkForm
+import calendar
+from datetime import datetime
 
-# Create your views here.
 class UzivatelViewSet(viewsets.ModelViewSet):
     queryset = Uzivatel.objects.all()
     serializer_class = UzivatelSerializer
@@ -18,9 +19,6 @@ class TreninkViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Trenink.objects.filter(active=True)
-
-#def index(request):
-   # return render(request, 'index.html')
 
 def treninky(request):
     treninky = Trenink.objects.all()
@@ -67,4 +65,14 @@ def kalendar(request):
     
     uzivatel = get_object_or_404(Uzivatel, pk=uzivatel_id)
 
-    return render(request, 'base.html', {'uzivatel': uzivatel})
+    dnes = datetime.today()
+    rok = dnes.year
+    mesic = dnes.month
+
+    kalendar = calendar.Calendar().monthdayscalendar(rok, mesic) # Vytvoří kalendář
+
+    return render(request, 'base.html', {'uzivatel': uzivatel, 'calendar': kalendar, 'year': rok, 'month': mesic})
+
+def zapistreninku(request, rok, mesic, den):
+    datum = f"{den}.{mesic}.{rok}"
+    return render(request, 'zapistreninku.html', {'datum': datum})

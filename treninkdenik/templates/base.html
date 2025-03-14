@@ -5,20 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Trénink Deník{% endblock %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">Trénink Deník</a>
-            <div class="navbar-nav">
-                <a class="nav-link" href="{% url 'treninky' %}">Moje tréninky</a>
-                <a class="nav-link" href="{% url 'pridat_trenink' %}">Přidat trénink</a>
+            <div class="navbar-nav"></div>
+                {% if request.user.is_authenticated %}
+                    <li><a class="nav-link" href="{% url 'treninky' %}">Moje tréninky</a></li>
+                    <li><a class="nav-link" href="{% url 'pridat_trenink' %}">Přidat trénink</a></li>
+                {% endif %}
+
+                {% if not request.user.is_authenticated %}
+                    <li><a class="nav-link" href="{% url 'login' %}">Přihlášení</a></li>
+                {% endif %}
             </div>
         </div>
     </nav>
 
     <div class="container mt-4">
-        {% block content %}{% endblock %}
-    </div>
+        {% block content %}
+        <h2 class="text-center">Vítejte, {{ uzivatel.jmeno }} {{ uzivatel.prijmeni }}!</h2>
+        <p class="text-center">Věk: {{ uzivatel.vek }}, Váha: {{ uzivatel.vaha }}kg, Výška: {{ uzivatel.vyska }}cm</p>
+        
+        <h3>Kalendář - {{ month }}/{{ year }}</h3>
+        <div class="calendar-container">
+            <table class="calendar">
+                <thead>
+                    <tr>
+                        <th>Po</th>
+                        <th>Út</th>
+                        <th>St</th>
+                        <th>Čt</th>
+                        <th>Pá</th>
+                        <th>So</th>
+                        <th>Ne</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for week in calendar %}
+                        <tr>
+                            {% for day in week %}
+                                <td class="day">
+                                    {% if day != 0 %}
+                                        <a href="#">{{ day }}</a>
+                                    {% else %}
+                                        <span class="empty-day"></span>
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>  
+    </div> 
+    {% endblock %}     
 </body>
 </html>

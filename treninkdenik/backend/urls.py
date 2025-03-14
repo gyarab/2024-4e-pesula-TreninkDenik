@@ -18,6 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from api.views import treninky, login, uzivatel_udaje, login, pridat_trenink, kalendar
+from api import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -27,5 +28,6 @@ urlpatterns = [
     path('pridat_trenink/', pridat_trenink, name='pridat_trenink'),
     path('login/', login, name='login'),
     path('udaje/', uzivatel_udaje, name='uzivatel_udaje'),
-    path('kalendar/', kalendar, name='kalendar'),
+    path('kalendar/', views.kalendar, name='kalendar'),
+    path('trenink/<int:year>/<int:month>/<int:day>/', views.zapistreninku, name='zapistreninku'),
 ]
