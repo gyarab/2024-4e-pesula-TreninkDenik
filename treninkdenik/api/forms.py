@@ -10,3 +10,7 @@ class TreninkForm(forms.ModelForm):
     class Meta:
         model = Trenink
         fields = ['datum','type','doba','pozn']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['datum'].widget = forms.SelectDateWidget() # Vybírá data

@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import Uzivatel, Trenink
 from .serializers import UzivatelSerializer, TreninkSerializer
 from .forms import UzivatelForm, TreninkForm
@@ -35,6 +36,11 @@ def login(request):
         form = UzivatelForm()
     
     return render(request, 'login.html', {'form': form}) 
+
+def prijmuti(request):
+    if request.user.is_authenticated:
+        return redirect('kalendar')
+    return render(request, 'login.html')
 
 def uzivatel_udaje(request):
     if request.method == 'POST':
@@ -73,6 +79,19 @@ def kalendar(request):
 
     return render(request, 'base.html', {'uzivatel': uzivatel, 'calendar': kalendar, 'year': rok, 'month': mesic})
 
-def zapistreninku(request, rok, mesic, den):
-    datum = f"{den}.{mesic}.{rok}"
-    return render(request, 'zapistreninku.html', {'datum': datum})
+@login_required
+def zapistreninku(request, datum):
+    datum = datetime.strptime(datum, '%Y-%m-%d').date()
+    treninky = Trenink.objects.filter(datum=datum, user=request.user)
+    if request.method == "POST":
+        form = TreninkForm(request.POST)
+        if form.is_valid():
+            trenink = form.save(commit=False)
+            trenink.user = request.user # Přidá usera k tréninku
+            trenink.datum = datum
+            trenink.save()
+            return redirect('kalendar')
+    else:
+        form = TreninkForm(initial={'datum': datum})
+
+    return render(request, 'zapistreninku.html', {'form': form, 'treninky': treninky})

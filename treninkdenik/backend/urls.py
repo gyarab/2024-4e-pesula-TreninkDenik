@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 from api.views import treninky, login, uzivatel_udaje, login, pridat_trenink, kalendar
 from api import views
 
@@ -26,8 +27,8 @@ urlpatterns = [
     path('', login, name='login'),
     path('treninky/', treninky, name='treninky'),
     path('pridat_trenink/', pridat_trenink, name='pridat_trenink'),
-    path('login/', login, name='login'),
+    path('login/', auth_views.LoginView.as_view(), name='login'),
     path('udaje/', uzivatel_udaje, name='uzivatel_udaje'),
     path('kalendar/', views.kalendar, name='kalendar'),
-    path('trenink/<int:year>/<int:month>/<int:day>/', views.zapistreninku, name='zapistreninku'),
+    path('zapistreninku/<str:datum>/', views.zapistreninku, name='zapistreninku'),
 ]

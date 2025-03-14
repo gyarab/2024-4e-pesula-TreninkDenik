@@ -3,17 +3,18 @@
 {% block content %}
 <h2 class="text-center">Zápis tréninku na {{ datum }}</h2>
 
-<form method="POST" class="text-center">
+<h3>Tréninky na tento den:</h3>
+<ul>
+    {% for trenink in treninky %}
+        <li>{{ trenink.doba }} hodiny, {{ trenink.typ }} - {{ trenink.popis }}</li>
+    {% empty %}
+        <li>Volno</li>
+    {% endfor %}
+</ul>
+
+<form method="POST">
     {% csrf_token %}
-    <label for="trenink">Typ tréninku</label>
-    <select name="trenink" id="trenink">
-        <option value="posilovna">Posilovna</option>
-        <option value="outdoor">Outdoor</option>
-    </select>
-    <br><br>
-    <label for="pozn">Poznámky:</label>
-    <textarea name="pozn" id="pozn"></textarea>
-    <br><br>
+    {{ form.as_p }}
     <button type="submit">Uložit trénink</button>
 </form>
 

@@ -27,10 +27,10 @@
 
     <div class="container mt-4">
         {% block content %}
-        <h2 class="text-center">Vítejte, {{ uzivatel.jmeno }} {{ uzivatel.prijmeni }}!</h2>
+        
         <p class="text-center">Věk: {{ uzivatel.vek }}, Váha: {{ uzivatel.vaha }}kg, Výška: {{ uzivatel.vyska }}cm</p>
         
-        <h3>Kalendář - {{ month }}/{{ year }}</h3>
+        <h3 class="text-center">Kalendář - {{ month }}/{{ year }}</h3>
         <div class="calendar-container">
             <table class="calendar">
                 <thead>
@@ -43,22 +43,19 @@
                         <th>So</th>
                         <th>Ne</th>
                     </tr>
-                </thead>
-                <tbody>
                     {% for week in calendar %}
-                        <tr>
-                            {% for day in week %}
-                                <td class="day">
-                                    {% if day != 0 %}
-                                        <a href="#">{{ day }}</a>
-                                    {% else %}
-                                        <span class="empty-day"></span>
-                                    {% endif %}
+                    <tr>
+                        {% for day in week %}
+                            {% if day %}
+                                <td>
+                                    <a href="{% url 'zapistreninku' datum=day %}">{{ day }}</a>
                                 </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        {% endfor %}  
+                    </tr>
+                {% endfor %} 
             </table>
         </div>  
     </div> 
