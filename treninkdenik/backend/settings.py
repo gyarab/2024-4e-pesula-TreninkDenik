@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "api",
     ]
 
-LOGIN_REDIRECT_URL = '/udaje/'  # Po přihlášení půjde uživatel rovnou na zadání údajů
+LOGIN_REDIRECT_URL = '/kaledar/'  # Po přihlášení půjde uživatel rovnou na zadání údajů
 LOGIN_URL = '/login/'  # Nepřihlášení uživatelé budou přesměrováni na login
 
 MIDDLEWARE = [
@@ -75,6 +75,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "backend.wsgi.application"
+
+SESSION_COOKIE_AGE = 86400  # 24 hodin
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 
 # Database

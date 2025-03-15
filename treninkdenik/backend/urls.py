@@ -18,8 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from api.views import treninky, login, uzivatel_udaje, login, pridat_trenink, kalendar
-from api import views
+from api.views import treninky, login, uzivatel_udaje, login, pridat_trenink, kalendar, zapistreninku
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -29,6 +28,6 @@ urlpatterns = [
     path('pridat_trenink/', pridat_trenink, name='pridat_trenink'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('udaje/', uzivatel_udaje, name='uzivatel_udaje'),
-    path('kalendar/', views.kalendar, name='kalendar'),
-    path('zapistreninku/<str:datum>/', views.zapistreninku, name='zapistreninku'),
+    path('kalendar/', kalendar, name='kalendar'),
+    path('zapistreninku/<int:datum>/', zapistreninku, name='zapistreninku'),
 ]

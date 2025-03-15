@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from django.shortcuts import redirect, render, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from .models import Uzivatel, Trenink
 from .serializers import UzivatelSerializer, TreninkSerializer
 from .forms import UzivatelForm, TreninkForm
@@ -75,13 +75,14 @@ def kalendar(request):
     rok = dnes.year
     mesic = dnes.month
 
-    kalendar = calendar.Calendar().monthdayscalendar(rok, mesic) # Vytvoří kalendář
+    kalendar = calendar.Calendar().monthdayscalendar(rok, mesic) #Vytvoří kalendář
 
-    return render(request, 'base.html', {'uzivatel': uzivatel, 'calendar': kalendar, 'year': rok, 'month': mesic})
+    dny_v_mesici = list(range(1, 32))  # 1 až 31
 
-@login_required
+    return render(request, 'kalendar.html', {'uzivatel': uzivatel, 'calendar': kalendar, 'year': rok, 'month': mesic, 'dny': dny_v_mesici})
+
 def zapistreninku(request, datum):
-    datum = datetime.strptime(datum, '%Y-%m-%d').date()
+    datum = datetime.strptime(datum, '%Y%m%d').date()
     treninky = Trenink.objects.filter(datum=datum, user=request.user)
     if request.method == "POST":
         form = TreninkForm(request.POST)
@@ -90,8 +91,8 @@ def zapistreninku(request, datum):
             trenink.user = request.user # Přidá usera k tréninku
             trenink.datum = datum
             trenink.save()
-            return redirect('kalendar')
+            return redirect('zapistreninku', datum=datum)
     else:
         form = TreninkForm(initial={'datum': datum})
 
-    return render(request, 'zapistreninku.html', {'form': form, 'treninky': treninky})
+    return render(request, 'zapistreninku.html', {'datum': datum, 'treninky': treninky, 'form': form})

@@ -17,10 +17,6 @@
                     <li><a class="nav-link" href="{% url 'treninky' %}">Moje tréninky</a></li>
                     <li><a class="nav-link" href="{% url 'pridat_trenink' %}">Přidat trénink</a></li>
                 {% endif %}
-
-                {% if not request.user.is_authenticated %}
-                    <li><a class="nav-link" href="{% url 'login' %}">Přihlášení</a></li>
-                {% endif %}
             </div>
         </div>
     </nav>
