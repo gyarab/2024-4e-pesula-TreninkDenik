@@ -1,13 +1,25 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Model uživatele
-class Uzivatel(models.Model):
-    jmeno = models.CharField(max_length=100)
-    vek = models.IntegerField()
-    vyska = models.FloatField()
-    vaha = models.FloatField()
+class Uzivatel(AbstractUser):
+    jmeno = models.CharField(unique=False, max_length=100)
+    vek = models.IntegerField(null=True, blank=True)
+    vaha = models.FloatField(null=True, blank=True)
+    vyska = models.FloatField(null=True, blank=True)
     id = models.AutoField(primary_key=True)
     active = models.BooleanField(default=True)
+
+    groups = models.ManyToManyField(
+        "auth.Group",
+        related_name="uzivatele_skupiny",
+        blank=True,
+    )
+    user_permissions = models.ManyToManyField(
+        "auth.Permission",
+        related_name="uzivatele_opravneni",
+        blank=True,
+    )
 
     def __str__(self):
         return self.jmeno

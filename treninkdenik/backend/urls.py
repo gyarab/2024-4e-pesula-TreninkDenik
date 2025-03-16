@@ -18,14 +18,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from api.views import treninky, login, uzivatel_udaje, login, pridat_trenink, kalendar, zapistreninku
+from api.views import treninky, uzivatel_udaje, register, login, pridat_trenink, kalendar, zapistreninku
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/', include('api.urls')),
-    path('', login, name='login'),
+    path('', register, name='register'),
     path('treninky/', treninky, name='treninky'),
     path('pridat_trenink/', pridat_trenink, name='pridat_trenink'),
+    path('register/', register, name='register'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('udaje/', uzivatel_udaje, name='uzivatel_udaje'),
     path('kalendar/', kalendar, name='kalendar'),

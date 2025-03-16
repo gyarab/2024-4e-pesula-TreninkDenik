@@ -1,9 +1,12 @@
+from django.db import IntegrityError
 from rest_framework import viewsets
 from django.shortcuts import redirect, render, get_object_or_404
-from django.http import HttpResponse
+from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from .models import Uzivatel, Trenink
 from .serializers import UzivatelSerializer, TreninkSerializer
-from .forms import UzivatelForm, TreninkForm
+from .forms import UzivatelForm, TreninkForm, RegistraceUseraForm
 import calendar
 from datetime import datetime
 
@@ -24,18 +27,6 @@ class TreninkViewSet(viewsets.ModelViewSet):
 def treninky(request):
     treninky = Trenink.objects.all()
     return render(request, 'treninky.html', {'treninky' : treninky})
-
-def login(request):
-    if request.method == 'POST':
-        form = UzivatelForm(request.POST)
-        if form.is_valid():
-            uzivatel = form.save() # Uloží uživatele
-            request.session['uzivatel_id'] = uzivatel.id
-            return redirect('kalendar') # Přesměruje na kalendář
-    else:
-        form = UzivatelForm()
-    
-    return render(request, 'login.html', {'form': form}) 
 
 def prijmuti(request):
     if request.user.is_authenticated:
@@ -64,10 +55,48 @@ def pridat_trenink(request):
 
     return render(request, 'pridat_trenink.html', {'form' : form})
 
+def login(request):
+    if request.method == 'POST':
+        form = UzivatelForm(request.POST)
+        if form.is_valid():
+            uzivatel = form.save() # Uloží uživatele
+            request.session['uzivatel_id'] = uzivatel.id
+            return redirect('kalendar') # Přesměruje na kalendář
+    else:
+        form = UzivatelForm()
+    
+    return render(request, 'login.html', {'form': form}) 
+
+def register(request):
+    if request.method == 'POST':
+        form = RegistraceUseraForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["jmeno"]  # Ujistěte se, že máte pole pro uživatelské jméno v rámci formuláře
+            if Uzivatel.objects.filter(username=username).exists():
+
+                # Pokud uživatelské jméno existuje, přidejte chybovou zprávu
+                messages.error(request, "Toto uživatelské jméno již existuje. Zvolte prosím jiné.")
+                return render(request, 'registrace.html', {'form': form})  # Zobrazte formulář znovu
+
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data["password"])  # Zahashování hesla
+            try:
+                user.save()
+                login(request, user)
+                return redirect('kalendar')  # Přesměrování na kalendář
+            except IntegrityError as e:
+                # Zpracování chyby, např. logování, informování uživatele
+                print("Chyba při ukládání uživatele:", e)
+            
+    else:
+        form = RegistraceUseraForm()
+    
+    return render(request, 'registrace.html', {'form': form})
+
 def kalendar(request):
     uzivatel_id = request.session.get('uzivatel_id')
     if not uzivatel_id:
-        return redirect ('login')
+        return redirect ('register')
     
     uzivatel = get_object_or_404(Uzivatel, pk=uzivatel_id)
 
@@ -85,8 +114,6 @@ def kalendar(request):
             else:
                 tyden_dny.append(f"{rok}-{mesic:02d}-{den:02d}")  # Formát Y-m-d
         kalendar.append(tyden_dny)
-
-    dny_v_mesici = [den for den in range(1, calendar.monthrange(rok, mesic)[1] + 1)]
 
     return render(request, 'kalendar.html', {'uzivatel': uzivatel, 'calendar': kalendar, 'year': rok, 'month': mesic})
 
