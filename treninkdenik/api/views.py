@@ -75,24 +75,39 @@ def kalendar(request):
     rok = dnes.year
     mesic = dnes.month
 
-    kalendar = calendar.Calendar().monthdayscalendar(rok, mesic) #Vytvoří kalendář
+    cal = calendar.Calendar()
+    kalendar = []
+    for tyden in cal.monthdayscalendar(rok, mesic):
+        tyden_dny = []
+        for den in tyden:
+            if den == 0:
+                tyden_dny.append(None)  # Prázdné místo pro dny mimo měsíc
+            else:
+                tyden_dny.append(f"{rok}-{mesic:02d}-{den:02d}")  # Formát Y-m-d
+        kalendar.append(tyden_dny)
 
-    dny_v_mesici = list(range(1, 32))  # 1 až 31
+    dny_v_mesici = [den for den in range(1, calendar.monthrange(rok, mesic)[1] + 1)]
 
-    return render(request, 'kalendar.html', {'uzivatel': uzivatel, 'calendar': kalendar, 'year': rok, 'month': mesic, 'dny': dny_v_mesici})
+    return render(request, 'kalendar.html', {'uzivatel': uzivatel, 'calendar': kalendar, 'year': rok, 'month': mesic})
 
 def zapistreninku(request, datum):
-    datum = datetime.strptime(datum, '%Y%m%d').date()
-    treninky = Trenink.objects.filter(datum=datum, user=request.user)
+    try: # Ujistíme se, že datum je ve správném formátu (YYYY-MM-DD)
+        datum_ber = str(datum)  # Převedeme datum na řetězec
+        datum_date = datetime.strptime(datum_ber, '%Y-%m-%d').date()  # Převedeme na datum
+        
+    except ValueError:
+        return redirect('kalendar')  # Pokud je formát špatný, přesměrujeme zpět
+    
+    treninky = Trenink.objects.filter(datum=datum_date, user=request.user)
     if request.method == "POST":
         form = TreninkForm(request.POST)
         if form.is_valid():
             trenink = form.save(commit=False)
             trenink.user = request.user # Přidá usera k tréninku
-            trenink.datum = datum
+            trenink.datum = datum_date
             trenink.save()
-            return redirect('zapistreninku', datum=datum)
+            return redirect('zapistreninku', datum=datum_date)
     else:
-        form = TreninkForm(initial={'datum': datum})
+        form = TreninkForm(initial={'datum': datum_date})
 
-    return render(request, 'zapistreninku.html', {'datum': datum, 'treninky': treninky, 'form': form})
+    return render(request, 'zapistreninku.html', {'datum': datum_date, 'treninky': treninky, 'form': form})

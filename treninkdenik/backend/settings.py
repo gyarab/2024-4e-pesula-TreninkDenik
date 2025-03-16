@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "api",
     ]
 
-LOGIN_REDIRECT_URL = '/kaledar/'  # Po přihlášení půjde uživatel rovnou na zadání údajů
+LOGIN_REDIRECT_URL = '/kalendar/'  # Po přihlášení půjde uživatel rovnou na zadání údajů
 LOGIN_URL = '/login/'  # Nepřihlášení uživatelé budou přesměrováni na login
 
 MIDDLEWARE = [

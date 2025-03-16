@@ -29,5 +29,5 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('udaje/', uzivatel_udaje, name='uzivatel_udaje'),
     path('kalendar/', kalendar, name='kalendar'),
-    path('zapistreninku/<int:datum>/', zapistreninku, name='zapistreninku'),
+    path('zapistreninku/<str:datum>/', zapistreninku, name='zapistreninku'),
 ]
