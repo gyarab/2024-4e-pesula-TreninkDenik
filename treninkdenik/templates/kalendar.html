@@ -11,11 +11,11 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Trénink Deník</a>
+            <a class="navbar-brand" href="{% url 'kalendar' %}">Trénink Deník</a>
             <div class="navbar-nav"></div>
                 {% if request.user.is_authenticated %}
                     <li><a class="nav-link" href="{% url 'treninky' %}">Moje tréninky</a></li>
-                    <li><a class="nav-link" href="{% url 'pridat_trenink' %}">Přidat trénink</a></li>
+                    <li><a class="nav-link" href="{% url 'uzivatel_udaje' %}">O vás</a></li>
                 {% endif %}
             </div>
         </div>
@@ -55,6 +55,9 @@
             </table>
         </div>  
     </div> 
+    <div class="container mt-4">
+        <button type="button">Moje tréninky</button>
+    </div>
     {% endblock %}     
 </body>
 </html>
