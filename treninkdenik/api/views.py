@@ -2,13 +2,12 @@ from django.db import IntegrityError
 from rest_framework import viewsets
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
-from .models import Uzivatel, Trenink
-from .serializers import UzivatelSerializer, TreninkSerializer
-from .forms import UzivatelForm, TreninkForm, RegistraceUseraForm
-import calendar
+from django.contrib.auth import login, authenticate
+from api.models import Uzivatel, Trenink
+from api.serializers import UzivatelSerializer, TreninkSerializer
+from api.forms import UzivatelForm, TreninkForm, RegistraceUseraForm
 from datetime import datetime
+import calendar
 
 class UzivatelViewSet(viewsets.ModelViewSet):
     queryset = Uzivatel.objects.all()
@@ -55,50 +54,54 @@ def pridat_trenink(request):
 
     return render(request, 'pridat_trenink.html', {'form' : form})
 
-def login(request):
-    if request.method == 'POST':
+def prihlaseni(request):
+    if request.method == "POST":
         form = UzivatelForm(request.POST)
         if form.is_valid():
-            uzivatel = form.save() # Uloží uživatele
-            request.session['uzivatel_id'] = uzivatel.id
-            return redirect('kalendar') # Přesměruje na kalendář
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                request.session['uzivatel_id'] = user.id  # Uložení uživatele do session
+                return redirect('kalendar')
     else:
         form = UzivatelForm()
-    
-    return render(request, 'login.html', {'form': form}) 
+    return render(request, "login.html", {"form": form})
 
 def register(request):
     if request.method == 'POST':
         form = RegistraceUseraForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data["jmeno"]  # Ujistěte se, že máte pole pro uživatelské jméno v rámci formuláře
+            username = form.cleaned_data['username']
+            
+            # Ověření, zda už existuje uživatel se stejným jménem
             if Uzivatel.objects.filter(username=username).exists():
-
-                # Pokud uživatelské jméno existuje, přidejte chybovou zprávu
-                messages.error(request, "Toto uživatelské jméno již existuje. Zvolte prosím jiné.")
-                return render(request, 'registrace.html', {'form': form})  # Zobrazte formulář znovu
-
+                messages.error(request, "Toto uživatelské jméno je již obsazené.")
+                return render(request, 'registrace.html', {'form': form})  # Znovu vykreslit formulář s chybou
+            
+            # Uživatel neexistuje → můžeme ho uložit
             user = form.save(commit=False)
             user.set_password(form.cleaned_data["password"])  # Zahashování hesla
-            try:
-                user.save()
-                login(request, user)
-                return redirect('kalendar')  # Přesměrování na kalendář
-            except IntegrityError as e:
-                # Zpracování chyby, např. logování, informování uživatele
-                print("Chyba při ukládání uživatele:", e)
-            
+            user.save()
+            request.session['uzivatel_id'] = user.id  # Uloží ID uživatele do session
+
+            login(request, user)  # Přihlášení uživatele
+            return redirect('kalendar')  # Přesměrování do kalendáře
+
     else:
         form = RegistraceUseraForm()
-    
+
     return render(request, 'registrace.html', {'form': form})
 
 def kalendar(request):
-    uzivatel_id = request.session.get('uzivatel_id')
-    if not uzivatel_id:
-        return redirect ('register')
+    #uzivatel_id = request.session.get('uzivatel_id')
+    #if not uzivatel_id:
+     #   return redirect ('register')
+    if not request.user.is_authenticated:  
+        return redirect('login')  # Přesměrování nepřihlášených uživatelů
     
-    uzivatel = get_object_or_404(Uzivatel, pk=uzivatel_id)
+    uzivatel = request.user
 
     dnes = datetime.today()
     rok = dnes.year

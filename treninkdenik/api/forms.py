@@ -6,7 +6,7 @@ from .models import Uzivatel, Trenink
 class UzivatelForm(forms.ModelForm):
     class Meta:
         model = Uzivatel
-        fields = ['jmeno','vek','vyska','vaha']
+        fields = ['username','vek','vyska','vaha']
 
 class TreninkForm(forms.ModelForm):
     class Meta:
@@ -24,10 +24,10 @@ class RegistraceUseraForm(forms.ModelForm):
 
     class Meta:
         model = Uzivatel
-        fields = ["jmeno", "email", "password"]
+        fields = ["username", "email", "password"]
 
     def clean_username(self):
-        dejmijmeno = self.cleaned_data.get('jmeno')
+        dejmijmeno = self.cleaned_data.get('username')
         if Uzivatel.objects.filter(username=dejmijmeno).exists():
             raise ValidationError("Toto uživatelské jméno již existuje. Zvolte prosím jiné.")
         return dejmijmeno

@@ -3,7 +3,8 @@ from django.contrib.auth.models import AbstractUser
 
 # Model uživatele
 class Uzivatel(AbstractUser):
-    jmeno = models.CharField(unique=False, max_length=100)
+    username = models.CharField(unique=True, max_length=100)
+    email = models.EmailField(unique=False)
     vek = models.IntegerField(null=True, blank=True)
     vaha = models.FloatField(null=True, blank=True)
     vyska = models.FloatField(null=True, blank=True)
@@ -22,7 +23,7 @@ class Uzivatel(AbstractUser):
     )
 
     def __str__(self):
-        return self.jmeno
+        return self.username
 
 # Model tréninku    
 class Trenink(models.Model):
