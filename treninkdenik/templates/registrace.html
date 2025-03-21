@@ -1,6 +1,7 @@
 {% extends 'kalendar.html' %}
 
 {% block content %}
+
 <div class="text-center">
     <h2>Registrace</h2>
     <form method="post">
@@ -9,5 +10,9 @@
     <button type="submit">Registrovat se</button>
     </form>
 </div>
+
+<a href="{% url 'prihlaseni' %}">
+    <button type="button">Přihlásit se</button>
+</a>
 
 {% endblock %}

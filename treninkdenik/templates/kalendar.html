@@ -53,11 +53,12 @@
                     </tr>
                 {% endfor %} 
             </table>
-        </div>  
+        </div>
+
+        <a href="{% url 'treninky' %}">
+            <button type="button">Moje tréninky</button>
+        </a>  
     </div> 
-    <div class="container mt-4">
-        <button type="button">Moje tréninky</button>
-    </div>
     {% endblock %}     
 </body>
 </html>

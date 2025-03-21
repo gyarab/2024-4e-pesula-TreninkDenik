@@ -5,13 +5,16 @@
     <h2>Přihlášení</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-    <button type="submit">Přihlásit se</button>
+        {{ form.as_p }}        
+        <label>
+            <input type="checkbox" name="remember_me"> Zapamatovat si mě
+        </label>
+        <button type="submit">Přihlásit se</button>
     </form>
 </div>
 
-{% if next %}
-    <p>Po přihlášení budete přesměrováni zpět na {{ next }}</p>
-{% endif %}
+<a href="{% url 'register' %}">
+    <button type="button">Registrovat se</button>
+</a>
 
 {% endblock %}

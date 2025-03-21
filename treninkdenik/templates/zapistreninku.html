@@ -6,9 +6,9 @@
 <h3>Tréninky na tento den:</h3>
 <ul>
     {% for trenink in treninky %}
-        <li>{{ trenink.doba }} minuty, {{ trenink.typ }} - {{ trenink.popis }}</li>
+        <p>{{ trenink.nazev }} ({{ trenink.datum }})</p>
     {% empty %}
-        <li>Volno</li>
+        <p>Volno</p>
     {% endfor %}
 </ul>
 

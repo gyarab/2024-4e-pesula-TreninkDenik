@@ -9,6 +9,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Název</th>
             <th>Datum</th>
             <th>Typ tréninku</th>
             <th>Doba</th>
@@ -18,6 +19,7 @@
     <tbody>
         {% for trenink in treninky %}
         <tr>
+            <td>{{ trenink.nazev }}</td>
             <td>{{ trenink.datum }}</td>
             <td>{{ trenink.type }}</td>
             <td>{{ trenink.doba }} min</td>

@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from .models import Uzivatel, Trenink
 
@@ -11,7 +12,7 @@ class UzivatelForm(forms.ModelForm):
 class TreninkForm(forms.ModelForm):
     class Meta:
         model = Trenink
-        fields = ['datum','type','doba','pozn']
+        fields = ['nazev','datum','type','doba','pozn']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -31,3 +32,6 @@ class RegistraceUseraForm(forms.ModelForm):
         if Uzivatel.objects.filter(username=dejmijmeno).exists():
             raise ValidationError("Toto uživatelské jméno již existuje. Zvolte prosím jiné.")
         return dejmijmeno
+
+class MemoryForm(AuthenticationForm):
+    zapamatuj_si = forms.BooleanField(required=False, initial=False, label="Zapamatovat si mě")

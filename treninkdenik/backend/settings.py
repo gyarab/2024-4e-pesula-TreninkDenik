@@ -76,8 +76,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
-SESSION_COOKIE_AGE = 86400  # 24 hodin
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Nebo 'cache' pro výkon
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 dní
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Neodhlásí uživatele po zavření okna
 
 
 # Database

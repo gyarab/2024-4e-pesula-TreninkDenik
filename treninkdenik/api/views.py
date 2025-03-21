@@ -3,9 +3,10 @@ from rest_framework import viewsets
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
 from api.models import Uzivatel, Trenink
 from api.serializers import UzivatelSerializer, TreninkSerializer
-from api.forms import UzivatelForm, TreninkForm, RegistraceUseraForm
+from api.forms import UzivatelForm, TreninkForm, RegistraceUseraForm, MemoryForm
 from datetime import datetime
 import calendar
 
@@ -56,17 +57,20 @@ def pridat_trenink(request):
 
 def prihlaseni(request):
     if request.method == "POST":
-        form = UzivatelForm(request.POST)
+        form = MemoryForm(data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                request.session['uzivatel_id'] = user.id  # Uložení uživatele do session
-                return redirect('kalendar')
+            user = form.get_user()
+            login(request, user)
+            
+            if form.cleaned_data.get('zapamatuj_si'):
+                request.session.set_expiry(86400 * 30)
+            else:
+                request.session.set_expiry(0)
+
+            return redirect('kalendar')
     else:
-        form = UzivatelForm()
+        form = MemoryForm()
+
     return render(request, "login.html", {"form": form})
 
 def register(request):
@@ -101,7 +105,7 @@ def kalendar(request):
     if not request.user.is_authenticated:  
         return redirect('login')  # Přesměrování nepřihlášených uživatelů
     
-    uzivatel = request.user
+    uzivatel = request.user # Přímé načtení přihlášeného uživatele
 
     dnes = datetime.today()
     rok = dnes.year
@@ -120,15 +124,17 @@ def kalendar(request):
 
     return render(request, 'kalendar.html', {'uzivatel': uzivatel, 'calendar': kalendar, 'year': rok, 'month': mesic})
 
+@login_required
 def zapistreninku(request, datum):
-    try: # Ujistíme se, že datum je ve správném formátu (YYYY-MM-DD)
-        datum_ber = str(datum)  # Převedeme datum na řetězec
-        datum_date = datetime.strptime(datum_ber, '%Y-%m-%d').date()  # Převedeme na datum
-        
+    try:
+        datum_ber = str(datum)
+        datum_date = datetime.strptime(datum_ber, '%Y-%m-%d').date()
     except ValueError:
-        return redirect('kalendar')  # Pokud je formát špatný, přesměrujeme zpět
-    
-    treninky = Trenink.objects.filter(datum=datum_date, user=request.user)
+        return redirect('kalendar')
+
+    # Filtrujeme tréninky pouze pro přihlášeného uživatele!
+    treninky = Trenink.objects.filter(datum=datum_date, user=request.user) 
+
     if request.method == "POST":
         form = TreninkForm(request.POST)
         if form.is_valid():

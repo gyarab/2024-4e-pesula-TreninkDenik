@@ -28,11 +28,14 @@ class Uzivatel(AbstractUser):
 # Model tréninku    
 class Trenink(models.Model):
     TRENINK_TYPES = [
-        ('gym', 'Posilovna'),
-        ('outdoor', 'Outdoor'),
+        ('gym', 'Gym/Posilovna'),
+        ('workout', 'Workout'),
+        ('běh', 'Běh'),
+        ('cyklo', 'Kolo'),
     ]
 
     user = models.ForeignKey(Uzivatel, on_delete=models.CASCADE)
+    nazev = models.CharField(max_length=100)
     datum = models.DateField()
     type = models.CharField(max_length=20, choices=TRENINK_TYPES) # Typ tréninku
     doba = models.PositiveIntegerField() # Uplynulá doba tréninku v minutách
