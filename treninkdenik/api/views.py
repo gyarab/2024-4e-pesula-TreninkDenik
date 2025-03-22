@@ -61,12 +61,7 @@ def prihlaseni(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            
-            if form.cleaned_data.get('zapamatuj_si'):
-                request.session.set_expiry(86400 * 30)
-            else:
-                request.session.set_expiry(0)
-
+            request.session.set_expiry(86400 * 30)
             return redirect('kalendar')
     else:
         form = MemoryForm()
@@ -91,6 +86,8 @@ def register(request):
             request.session['uzivatel_id'] = user.id  # Uloží ID uživatele do session
 
             login(request, user)  # Přihlášení uživatele
+
+            request.session.set_expiry(60 * 60 * 24 * 30)  # 30 dní
             return redirect('kalendar')  # Přesměrování do kalendáře
 
     else:
@@ -127,8 +124,7 @@ def kalendar(request):
 @login_required
 def zapistreninku(request, datum):
     try:
-        datum_ber = str(datum)
-        datum_date = datetime.strptime(datum_ber, '%Y-%m-%d').date()
+        datum_date = datetime.strptime(datum, '%Y-%m-%d').date()
     except ValueError:
         return redirect('kalendar')
 

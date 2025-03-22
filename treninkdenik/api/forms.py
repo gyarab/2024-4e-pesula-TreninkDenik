@@ -13,6 +13,13 @@ class TreninkForm(forms.ModelForm):
     class Meta:
         model = Trenink
         fields = ['nazev','datum','type','doba','pozn']
+        labels = {
+            'nazev': 'Název',
+            'datum': 'Datum',
+            'type': 'Typ tréninku',
+            'doba': 'Doba (minuty)',
+            'pozn': 'Poznámky'
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

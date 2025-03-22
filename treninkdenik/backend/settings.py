@@ -78,6 +78,7 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Nebo 'cache' pro výkon
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 dní
+SESSION_SAVE_EVERY_REQUEST = True  # Obnoví session při každém požadavku
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Neodhlásí uživatele po zavření okna
 
 
