@@ -8,11 +8,18 @@ class UzivatelForm(forms.ModelForm):
     class Meta:
         model = Uzivatel
         fields = ['username','vek','vyska','vaha']
+        labels = {
+            'username': 'Jméno',
+            'vek': 'Věk',
+            'vyska': 'Výška',
+            'vaha': 'Váha',
+        }
 
 class TreninkForm(forms.ModelForm):
     class Meta:
         model = Trenink
         fields = ['nazev','datum','type','doba','pozn']
+        widgets = {'datum': forms.DateInput(attrs={'readonly': 'readonly'}), }
         labels = {
             'nazev': 'Název',
             'datum': 'Datum',

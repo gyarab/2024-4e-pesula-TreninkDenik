@@ -25,7 +25,7 @@ class TreninkViewSet(viewsets.ModelViewSet):
         return Trenink.objects.filter(active=True)
 
 def treninky(request):
-    treninky = Trenink.objects.all()
+    treninky = Trenink.objects.filter(user=request.user)
     return render(request, 'treninky.html', {'treninky' : treninky})
 
 def prijmuti(request):
@@ -43,17 +43,6 @@ def uzivatel_udaje(request):
         form = UzivatelForm(instance=request.user)
     
     return render(request, 'uzivatel_udaje.html', {'form': form})
-
-def pridat_trenink(request):
-    if request.method == "POST":
-        form = TreninkForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('treninky')
-    else:
-        form = TreninkForm()
-
-    return render(request, 'pridat_trenink.html', {'form' : form})
 
 def prihlaseni(request):
     if request.method == "POST":

@@ -18,7 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import path, include
-from api.views import treninky, uzivatel_udaje, register, prihlaseni, pridat_trenink, kalendar, zapistreninku
+from api.views import treninky, uzivatel_udaje, register, prihlaseni, kalendar, zapistreninku
 
 def domovni_page(request):
     if request.user.is_authenticated:
@@ -30,7 +30,6 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('', domovni_page, name='home'),
     path('treninky/', treninky, name='treninky'),
-    path('pridat_trenink/', pridat_trenink, name='pridat_trenink'),
     path('register/', register, name='register'),
     path('login/', prihlaseni, name='prihlaseni'),
     path('udaje/', uzivatel_udaje, name='uzivatel_udaje'),
