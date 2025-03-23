@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     ]
 
 LOGIN_REDIRECT_URL = '/kalendar/'  # Po přihlášení půjde uživatel rovnou na zadání údajů
-LOGIN_URL = '/login/'  # Nepřihlášení uživatelé budou přesměrováni na login
+LOGIN_URL = '/register/'  # Nepřihlášení uživatelé budou přesměrováni na register
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

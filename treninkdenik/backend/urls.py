@@ -34,5 +34,6 @@ urlpatterns = [
     path('login/', prihlaseni, name='prihlaseni'),
     path('udaje/', uzivatel_udaje, name='uzivatel_udaje'),
     path('kalendar/', kalendar, name='kalendar'),
+    path('kalendar/<int:rok>/<int:mesic>/', kalendar, name='kalendar'),
     path('zapistreninku/<str:datum>/', zapistreninku, name='zapistreninku'),
 ]

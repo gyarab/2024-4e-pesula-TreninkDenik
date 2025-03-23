@@ -22,11 +22,14 @@
     </nav>
 
     <div class="container mt-4">
-        {% block content %}
+        {% block content %}        
+        <div class="text-center mb-3">
+            <a href="{% url 'kalendar' predchozi_rok predchozi_mesic %}" class="btn btn-success mx-3">&laquo;</a>
+            <span class="mx-4"><strong>Kalendář {{ month }}/{{ year }}</strong></span>
+            <a href="{% url 'kalendar' dalsi_rok dalsi_mesic %}" class="btn btn-success mx-3">&raquo;</a>
+        </div>
         
-        <p class="text-center">Věk: {{ uzivatel.vek }}, Váha: {{ uzivatel.vaha }}kg, Výška: {{ uzivatel.vyska }}cm</p>
         
-        <h3 class="text-center">Kalendář - {{ month }}/{{ year }}</h3>
         <div class="calendar-container">
             <table class="calendar">
                 <thead>
@@ -43,8 +46,8 @@
                     <tr>
                         {% for day in week %}
                             {% if day %}
-                                <td>
-                                    <a href="{% url 'zapistreninku' datum=day %}">{{ day }}</a>
+                                <td {% if day in treninkove_dny %} style="background-color: lightgreen;" {% endif %}>
+                                    <a href="{% url 'zapistreninku' datum=day %}" class="btn btn-light btn-outline-secondary">{{ day }}</a>
                                 </td>
                             {% else %}
                                 <td></td>

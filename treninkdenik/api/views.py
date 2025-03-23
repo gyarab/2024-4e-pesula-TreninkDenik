@@ -84,21 +84,28 @@ def register(request):
 
     return render(request, 'registrace.html', {'form': form})
 
-def kalendar(request):
-    #uzivatel_id = request.session.get('uzivatel_id')
-    #if not uzivatel_id:
-     #   return redirect ('register')
-    if not request.user.is_authenticated:  
-        return redirect('login')  # Přesměrování nepřihlášených uživatelů
-    
+@login_required
+def kalendar(request, rok=None, mesic=None):
     uzivatel = request.user # Přímé načtení přihlášeného uživatele
 
-    dnes = datetime.today()
-    rok = dnes.year
-    mesic = dnes.month
+    if not rok or not mesic:
+        dnes = datetime.today()
+        rok = dnes.year
+        mesic = dnes.month
+    else:
+        rok = int(rok)
+        mesic = int(mesic)
+
+    # Výpočet předchozího a následujícího měsíce
+    predchozi_rok, predchozi_mesic = (rok, mesic - 1) if mesic > 1 else (rok - 1, 12)
+    dalsi_rok, dalsi_mesic = (rok, mesic + 1) if mesic < 12 else (rok + 1, 1)
 
     cal = calendar.Calendar()
     kalendar = []
+
+    treninky = Trenink.objects.filter(user=uzivatel, datum__year=rok, datum__month=mesic)
+    udelaltrenink = set(treninky.values_list('datum', flat=True)) # <-Pomocí datetime.date?-> {datetime.date(2025, 3, 22), datetime.date(2025, 3, 21)}
+
     for tyden in cal.monthdayscalendar(rok, mesic):
         tyden_dny = []
         for den in tyden:
@@ -108,7 +115,10 @@ def kalendar(request):
                 tyden_dny.append(f"{rok}-{mesic:02d}-{den:02d}")  # Formát Y-m-d
         kalendar.append(tyden_dny)
 
-    return render(request, 'kalendar.html', {'uzivatel': uzivatel, 'calendar': kalendar, 'year': rok, 'month': mesic})
+    return render(request, 'kalendar.html', {'uzivatel': uzivatel, 'calendar': kalendar, 
+                                             'year': rok, 'month': mesic, 'udelaltrenink': udelaltrenink,
+                                             'predchozi_rok': predchozi_rok, 'predchozi_mesic': predchozi_mesic,
+                                             'dalsi_rok': dalsi_rok, 'dalsi_mesic': dalsi_mesic,})
 
 @login_required
 def zapistreninku(request, datum):

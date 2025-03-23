@@ -19,7 +19,6 @@ class TreninkForm(forms.ModelForm):
     class Meta:
         model = Trenink
         fields = ['nazev','datum','type','doba','pozn']
-        widgets = {'datum': forms.DateInput(attrs={'readonly': 'readonly'}), }
         labels = {
             'nazev': 'Název',
             'datum': 'Datum',
@@ -30,7 +29,7 @@ class TreninkForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['datum'].widget = forms.SelectDateWidget() # Vybírá data
+        self.fields['datum'].widget.attrs['readonly'] = True
 
 Uzivatel = get_user_model()
 

@@ -39,7 +39,7 @@ class Trenink(models.Model):
     datum = models.DateField()
     type = models.CharField(max_length=20, choices=TRENINK_TYPES) # Typ tréninku
     doba = models.PositiveIntegerField() # Uplynulá doba tréninku v minutách
-    pozn = models.TextField(blank=True)
+    pozn = models.TextField(max_length=100)
     active = models.BooleanField(default=True)
 
     def __str__(self):
