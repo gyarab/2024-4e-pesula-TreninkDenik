@@ -76,7 +76,7 @@ def register(request):
 
             login(request, user)  # Přihlášení uživatele
 
-            request.session.set_expiry(60 * 60 * 24 * 30)  # 30 dní
+            request.session.set_expiry(None) # Přihlášen trvale
             return redirect('kalendar')  # Přesměrování do kalendáře
 
     else:
