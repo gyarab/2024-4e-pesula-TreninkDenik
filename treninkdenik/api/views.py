@@ -1,8 +1,7 @@
-from django.db import IntegrityError
 from rest_framework import viewsets
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect, render
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from api.models import Uzivatel, Trenink
 from api.serializers import UzivatelSerializer, TreninkSerializer
@@ -28,11 +27,6 @@ def treninky(request):
     treninky = Trenink.objects.filter(user=request.user)
     return render(request, 'treninky.html', {'treninky' : treninky})
 
-def prijmuti(request):
-    if request.user.is_authenticated:
-        return redirect('kalendar')
-    return render(request, 'login.html')
-
 def uzivatel_udaje(request):
     if request.method == 'POST':
         form = UzivatelForm(request.POST, instance=request.user)
@@ -43,19 +37,6 @@ def uzivatel_udaje(request):
         form = UzivatelForm(instance=request.user)
     
     return render(request, 'uzivatel_udaje.html', {'form': form})
-
-def prihlaseni(request):
-    if request.method == "POST":
-        form = MemoryForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            request.session.set_expiry(86400 * 30)
-            return redirect('kalendar')
-    else:
-        form = MemoryForm()
-
-    return render(request, "login.html", {"form": form})
 
 def register(request):
     if request.method == 'POST':
