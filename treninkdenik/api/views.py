@@ -85,7 +85,7 @@ def kalendar(request, rok=None, mesic=None):
     kalendar = []
 
     treninky = Trenink.objects.filter(user=uzivatel, datum__year=rok, datum__month=mesic)
-    udelaltrenink = set(treninky.values_list('datum', flat=True)) # <-Pomocí datetime.date?-> {datetime.date(2025, 3, 22), datetime.date(2025, 3, 21)}
+    udelaltrenink = set(treninky.values_list('datum', flat=True)) # Pomocí datetime.date
 
     for tyden in cal.monthdayscalendar(rok, mesic):
         tyden_dny = []
