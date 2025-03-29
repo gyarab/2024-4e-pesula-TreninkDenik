@@ -24,14 +24,14 @@ class TreninkViewSet(viewsets.ModelViewSet):
         return Trenink.objects.filter(active=True)
 
 def treninky(request):
-    treninky = Trenink.objects.filter(user=request.user)
+    treninky = Trenink.objects.filter(user=request.user) # Pouze tréninky přihlášeného uživatele
     return render(request, 'treninky.html', {'treninky' : treninky})
 
 def uzivatel_udaje(request):
     if request.method == 'POST':
         form = UzivatelForm(request.POST, instance=request.user)
         if form.is_valid():
-            form.save() # Uloží údaje
+            form.save() # Uloží údaje o uživateli
             return redirect('kalendar') # Přesměruje na kalendář
     else:
         form = UzivatelForm(instance=request.user)
@@ -42,23 +42,22 @@ def register(request):
     if request.method == 'POST':
         form = RegistraceUseraForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            
-            # Ověření, zda už existuje uživatel se stejným jménem
+            username = form.cleaned_data['username']  
+
+            # Ověří, jestli uživatel se stejným jménem již existuje
             if Uzivatel.objects.filter(username=username).exists():
-                messages.error(request, "Toto uživatelské jméno je již obsazené.")
-                return render(request, 'registrace.html', {'form': form})  # Znovu vykreslit formulář s chybou
-            
-            # Uživatel neexistuje → můžeme ho uložit
+                messages.error(request, "Toto uživatelské jméno je již obsazené.") # Vyskočí zpráva
+                return render(request, 'registrace.html', {'form': form})            
             user = form.save(commit=False)
             user.set_password(form.cleaned_data["password"])  # Zahashování hesla
-            user.save()
-            request.session['uzivatel_id'] = user.id  # Uloží ID uživatele do session
+            user.save() # Uloží uživatele
+            request.session['uzivatel_id'] = user.id  # Uloží id uživatele do session
 
-            login(request, user)  # Přihlášení uživatele
-
-            request.session.set_expiry(None) # Přihlášen trvale
-            return redirect('kalendar')  # Přesměrování do kalendáře
+            # Uživatel registrován natrvalo
+            login(request, user)  
+            request.session.set_expiry(None)
+            
+            return redirect('kalendar')  # Přesměruje uživatel ke kalendáři
 
     else:
         form = RegistraceUseraForm()
@@ -67,17 +66,17 @@ def register(request):
 
 @login_required
 def kalendar(request, rok=None, mesic=None):
-    uzivatel = request.user # Přímé načtení přihlášeného uživatele
+    uzivatel = request.user # Přímé načtení uživatele
 
     if not rok or not mesic:
-        dnes = datetime.today()
+        dnes = datetime.today() # Dnesšní datum
         rok = dnes.year
         mesic = dnes.month
     else:
         rok = int(rok)
         mesic = int(mesic)
 
-    # Výpočet předchozího a následujícího měsíce
+    # Výpočítá předchozí a následující rok a měsíc
     predchozi_rok, predchozi_mesic = (rok, mesic - 1) if mesic > 1 else (rok - 1, 12)
     dalsi_rok, dalsi_mesic = (rok, mesic + 1) if mesic < 12 else (rok + 1, 1)
 

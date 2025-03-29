@@ -30,6 +30,7 @@ class TreninkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['datum'].widget.attrs['readonly'] = True
+        self.fields['pozn'].widget.attrs.update({'rows': 3, 'cols': 30, 'style': 'resize: none;'})
 
 Uzivatel = get_user_model()
 

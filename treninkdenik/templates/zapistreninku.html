@@ -8,7 +8,9 @@
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Uložit trénink</button>
+            <button type="submit" style="border-radius: 10px; padding: 10px 15px; background-color: green; color: white; border: none; cursor: pointer;">
+                Uložit trénink
+            </button>
         </form>
     </div>
     <div style="flex: 1;">
@@ -24,6 +26,15 @@
         </ul>
     </div>
 </div>
-
+<style>
+    input, select, textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    } 
+</style>
 
 {% endblock %}

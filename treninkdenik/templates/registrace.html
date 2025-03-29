@@ -7,12 +7,20 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-    <button type="submit">Registrovat se</button>
+    <button type="submit" style="border-radius: 10px; padding: 10px 15px; background-color: green; color: white; border: none; cursor: pointer;">
+        Registrovat se
+    </button>
     </form>
 </div>
-
-<a href="{% url 'prihlaseni' %}">
-    <button type="button">Přihlásit se</button>
-</a>
+<style>
+    input, select, textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    } 
+</style>
 
 {% endblock %}

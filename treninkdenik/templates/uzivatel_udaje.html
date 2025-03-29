@@ -5,11 +5,24 @@
 <div class="container" style="display: flex; gap: 20px;">
     <div style="display: inline-block; vertical-align: top; margin-right: 20px;"></div>
         <h2>Zadej své údaje</h2>
-        <form method="post">
+        <form method="post" style="display: flex; flex-direction: column; gap: 10px; max-width: 300px;">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Uložit údaje</button>
+            <button type="submit" style="border-radius: 10px; padding: 10px 15px; background-color: green; color: white; border: none; cursor: pointer;">
+                Uložit údaje
+            </button>
         </form>
 </div>
+<style>
+    input, select, textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    } 
+</style>
+
 
 {% endblock %}
