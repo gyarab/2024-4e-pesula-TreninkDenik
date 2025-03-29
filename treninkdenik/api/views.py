@@ -67,7 +67,7 @@ def register(request):
 @login_required
 def kalendar(request, rok=None, mesic=None):
     uzivatel = request.user # Přímé načtení uživatele
-
+    
     if not rok or not mesic:
         dnes = datetime.today() # Dnešní datum
         rok = dnes.year
