@@ -4,17 +4,18 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from .models import Uzivatel, Trenink
 
+# Formulář pro vyplnění údajů o uživateli
 class UzivatelForm(forms.ModelForm):
     class Meta:
         model = Uzivatel
-        fields = ['username','vek','vyska','vaha']
+        fields = ['vek','vyska','vaha']
         labels = {
-            'username': 'Jméno',
             'vek': 'Věk',
             'vyska': 'Výška',
             'vaha': 'Váha',
         }
 
+# Formulář pro zapsání tréninku
 class TreninkForm(forms.ModelForm):
     class Meta:
         model = Trenink
@@ -29,23 +30,27 @@ class TreninkForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['datum'].widget.attrs['readonly'] = True
+        self.fields['datum'].widget.attrs['readonly'] = True # Pole datum je nastaveno na 'read only', takže nejde upravovat
         self.fields['pozn'].widget.attrs.update({'rows': 3, 'cols': 30, 'style': 'resize: none;'})
 
 Uzivatel = get_user_model()
 
+# Formulář pro registraci uživatele
 class RegistraceUseraForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         model = Uzivatel
         fields = ["username", "email", "password"]
-
+        labels = {
+            'username': 'Uživatelské jméno',
+            'email': 'E-mail',
+            'password': 'Heslo'
+        }
+    
+    # Kontrola jména uživatele
     def clean_username(self):
         dejmijmeno = self.cleaned_data.get('username')
         if Uzivatel.objects.filter(username=dejmijmeno).exists():
-            raise ValidationError("Toto uživatelské jméno již existuje. Zvolte prosím jiné.")
+            raise ValidationError("Uživatelské jméno již existuje. Zvolte jiné.")
         return dejmijmeno
-
-class MemoryForm(AuthenticationForm):
-    zapamatuj_si = forms.BooleanField(required=False, initial=False, label="Zapamatovat si mě")

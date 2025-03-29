@@ -1,4 +1,5 @@
-/* Centrování kalendáře na stránce */
+/* Styly pro vzhled a rozpoložení kalendáře */
+
 .calendar-container {
     display: flex;
     justify-content: center;
@@ -6,21 +7,18 @@
     margin-top: 20px;
 }
 
-/* Styling samotného kalendáře */
 .calendar {
     border-collapse: collapse;
     width: 70%;
     text-align: center;
 }
 
-/* Styling pro hlavičku (dny v týdnu) */
 .calendar th {
     background-color: #4CAF50;
     color: white;
     padding: 10px;
 }
 
-/* Styling pro buňky dny */
 .calendar td {
     width: 50px;
     height: 50px;
@@ -30,7 +28,6 @@
     vertical-align: middle;
 }
 
-/* Styl pro klikatelné dny */
 .calendar td a {
     display: block;
     width: 100%;
@@ -42,12 +39,10 @@
     line-height: 30px;
 }
 
-/* Styl pro neaktivní dny (pokud je den 0) */
 .empty-day {
     background-color: #f9f9f9;
 }
 
-/* Hover efekt pro klikatelné dny */
 .calendar td a:hover {
     background-color: #ddd;
 }

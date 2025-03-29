@@ -21,18 +21,18 @@ from django.urls import path, include
 from api.views import treninky, uzivatel_udaje, register, kalendar, zapistreninku
 
 def domovni_page(request):
-    if request.user.is_authenticated:
-        return redirect('kalendar')
-    return redirect('register')
+    if request.user.is_authenticated: # Pokud se uživatel registroval, se spuětním aplikace zobrazí kalendář
+        return redirect('kalendar') # 
+    return redirect('register') # V opačném případě zobrazí stránku s registrací
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/', include('api.urls')),
-    path('', domovni_page, name='home'),
-    path('treninky/', treninky, name='treninky'),
-    path('register/', register, name='register'),
-    path('udaje/', uzivatel_udaje, name='uzivatel_udaje'),
-    path('kalendar/', kalendar, name='kalendar'),
-    path('kalendar/<int:rok>/<int:mesic>/', kalendar, name='kalendar'),
-    path('zapistreninku/<str:datum>/', zapistreninku, name='zapistreninku'),
+    path('', domovni_page, name='home'), # viz funkce domovni_page (řádek 23)
+    path('treninky/', treninky, name='treninky'), # Seznam tréninků uživatele
+    path('register/', register, name='register'), # Registrace nových uživatelů
+    path('udaje/', uzivatel_udaje, name='uzivatel_udaje'), # Údaje o uživateli
+    path('kalendar/', kalendar, name='kalendar'), # Default kalendář
+    path('kalendar/<int:rok>/<int:mesic>/', kalendar, name='kalendar'), # URL kalendáře 
+    path('zapistreninku/<str:datum>/', zapistreninku, name='zapistreninku'), # URL vybraného dne pro zapisování tréninků
 ]

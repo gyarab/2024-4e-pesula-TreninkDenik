@@ -5,7 +5,7 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from api.models import Uzivatel, Trenink
 from api.serializers import UzivatelSerializer, TreninkSerializer
-from api.forms import UzivatelForm, TreninkForm, RegistraceUseraForm, MemoryForm
+from api.forms import UzivatelForm, TreninkForm, RegistraceUseraForm
 from datetime import datetime
 import calendar
 
@@ -69,7 +69,7 @@ def kalendar(request, rok=None, mesic=None):
     uzivatel = request.user # Přímé načtení uživatele
 
     if not rok or not mesic:
-        dnes = datetime.today() # Dnesšní datum
+        dnes = datetime.today() # Dnešní datum
         rok = dnes.year
         mesic = dnes.month
     else:
@@ -80,19 +80,20 @@ def kalendar(request, rok=None, mesic=None):
     predchozi_rok, predchozi_mesic = (rok, mesic - 1) if mesic > 1 else (rok - 1, 12)
     dalsi_rok, dalsi_mesic = (rok, mesic + 1) if mesic < 12 else (rok + 1, 1)
 
+    # Kalendář
     cal = calendar.Calendar()
     kalendar = []
 
     treninky = Trenink.objects.filter(user=uzivatel, datum__year=rok, datum__month=mesic)
-    udelaltrenink = set(treninky.values_list('datum', flat=True)) # Pomocí datetime.date
+    udelaltrenink = set(treninky.values_list('datum', flat=True)) 
 
     for tyden in cal.monthdayscalendar(rok, mesic):
         tyden_dny = []
         for den in tyden:
             if den == 0:
-                tyden_dny.append(None)  # Prázdné místo pro dny mimo měsíc
+                tyden_dny.append(None)  # Prázdné místo pro dny předchozího a následujícícho měsíce
             else:
-                tyden_dny.append(f"{rok}-{mesic:02d}-{den:02d}")  # Formát Y-m-d
+                tyden_dny.append(f"{rok}-{mesic:02d}-{den:02d}")  # Formát YYY-MM-DD
         kalendar.append(tyden_dny)
 
     return render(request, 'kalendar.html', {'uzivatel': uzivatel, 'calendar': kalendar, 
@@ -115,8 +116,8 @@ def zapistreninku(request, datum):
         if form.is_valid():
             trenink = form.save(commit=False)
             trenink.user = request.user # Přidá usera k tréninku
-            trenink.datum = datum_date
-            trenink.save()
+            trenink.datum = datum_date # Využije datum vybraného dne
+            trenink.save() # Uloží trénink
             return redirect('zapistreninku', datum=datum_date)
     else:
         form = TreninkForm(initial={'datum': datum_date})
